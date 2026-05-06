@@ -318,6 +318,31 @@ export class CreateAccessListTool extends AtlasToolBase {
     static toolName: string;
 }
 
+// @public (undocumented)
+export class CreateClusterTool extends AtlasToolBase {
+    // (undocumented)
+    argsShape: {
+        projectId: z.ZodString;
+        name: z.ZodString;
+        profile: z.ZodDefault<z.ZodEnum<{
+            DEV: "DEV";
+            PROD: "PROD";
+            HIGH_AVAILABILITY: "HIGH_AVAILABILITY";
+        }>>;
+        region: z.ZodDefault<z.ZodString>;
+    };
+    // (undocumented)
+    static category: "atlas";
+    // (undocumented)
+    description: string;
+    // (undocumented)
+    protected execute(input: ToolArgs<typeof CreateClusterTool.argsShape>): Promise<CallToolResult>;
+    // (undocumented)
+    static operationType: OperationType;
+    // (undocumented)
+    static toolName: string;
+}
+
 // Warning: (ae-forgotten-export) The symbol "CreateCollectionOutputSchema" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
@@ -1178,6 +1203,25 @@ export abstract class MongoDBToolBase extends ToolBase {
 
 // @public
 export type OperationType = "metadata" | "read" | "create" | "delete" | "update" | "connect";
+
+// @public (undocumented)
+export class PauseClusterTool extends AtlasToolBase {
+    // (undocumented)
+    argsShape: {
+        projectId: ZodString;
+        clusterName: ZodString;
+    };
+    // (undocumented)
+    static category: "atlas";
+    // (undocumented)
+    description: string;
+    // (undocumented)
+    protected execute(input: ToolArgs<typeof PauseClusterTool.argsShape>): Promise<CallToolResult>;
+    // (undocumented)
+    static operationType: OperationType;
+    // (undocumented)
+    static toolName: string;
+}
 
 // Warning: (ae-forgotten-export) The symbol "RenameCollectionOutputSchema" needs to be exported by the entry point index.d.ts
 //

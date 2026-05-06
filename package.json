@@ -75,6 +75,7 @@
     "compile": "concurrently \"pnpm run build:esm\" \"pnpm run build:cjs\" && pnpm run build:universal-package",
     "build": "pnpm run -r --include-workspace-root compile",
     "inspect": "pnpm run build && mcp-inspector -- dist/esm/index.js",
+    "inspect:dev": "pnpm run build && mcp-inspector -e MDB_MCP_API_CLIENT_ID=$MDB_MCP_API_CLIENT_ID -e MDB_MCP_API_CLIENT_SECRET=$MDB_MCP_API_CLIENT_SECRET -e MDB_MCP_API_BASE_URL=$MDB_MCP_API_BASE_URL -- dist/esm/index.js",
     "prettier": "prettier",
     "check": "concurrently \"pnpm run build\" \"pnpm run check:types\" \"pnpm run check:lint\" \"pnpm run check:format\" \"pnpm run check:dependencies\" && pnpm run check:api",
     "check:api-report": "concurrently \"api-extractor run --config api-extractor.json\" \"api-extractor run --config api-extractor/api-extractor-web.json\" \"api-extractor run --config api-extractor/api-extractor-tools.json\" \"api-extractor run --config api-extractor/api-extractor-ui.json\"",
