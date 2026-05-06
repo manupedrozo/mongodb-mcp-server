@@ -1,4 +1,5 @@
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
+import { z } from "zod";
 import { type ToolArgs, type OperationType } from "../../tool.js";
 import { AtlasToolBase } from "../atlasTool.js";
 import { AtlasArgs } from "../../args.js";
@@ -12,22 +13,30 @@ export class PauseClusterTool extends AtlasToolBase {
     static category = "atlas" as const;
 
     public description =
-        "Pause a running MongoDB Atlas cluster. " +
-        "Waits for the cluster to reach IDLE state before issuing the pause, " +
-        "which may take several minutes after cluster creation.";
+        "Pause or unpause a MongoDB Atlas cluster. " +
+        "When pausing, waits for the cluster to reach IDLE state first, " +
+        "which may take several minutes after cluster creation or a recent operation. " +
+        "When unpausing, issues the request immediately.";
 
     public argsShape = {
         projectId: AtlasArgs.projectId().describe("Atlas project ID that contains the cluster"),
-        clusterName: AtlasArgs.clusterName().describe("Name of the cluster to pause"),
+        clusterName: AtlasArgs.clusterName().describe("Name of the cluster to pause or unpause"),
+        paused: z.boolean().default(true).describe("true to pause the cluster, false to unpause it"),
     };
 
-    protected async execute({ projectId, clusterName }: ToolArgs<typeof this.argsShape>): Promise<CallToolResult> {
-        await this.waitForIdle(projectId, clusterName);
+    protected async execute({
+        projectId,
+        clusterName,
+        paused,
+    }: ToolArgs<typeof this.argsShape>): Promise<CallToolResult> {
+        if (paused) {
+            await this.waitForIdle(projectId, clusterName);
+        }
 
-        await this.apiClient.updateCluster(projectId, clusterName, { paused: true });
+        await this.apiClient.updateCluster(projectId, clusterName, { paused });
 
         return {
-            content: [{ type: "text", text: `Cluster "${clusterName}" has been paused.` }],
+            content: [{ type: "text", text: `Cluster "${clusterName}" has been ${paused ? "paused" : "unpaused"}.` }],
         };
     }
 
